@@ -9,77 +9,89 @@
  */
 abstract class Base<?php echo ucfirst($this->getModuleName()) ?>GeneratorHelper extends sfModelGeneratorHelper
 {
-  public function getUrlForAction($action)
-  {
-    return 'list' == $action ? '<?php echo $this->params['route_prefix'] ?>' : '<?php echo $this->params['route_prefix'] ?>_'.$action;
-  }
-
-  public function linkToShow($object, $params)
-  {
-    return '<li class="sf_admin_action_show">'.link_to('<span>'.__($params['label'], array(), 'sf_admin').'</span>', $this->getUrlForAction('show'), $object).'</li>';
-  }
-
-  public function linkToPrevious($object, $params)
-  {
-    if(!$object->isNew())
+    private function buttonStyle($params)
     {
-        $user = sfContext::getInstance()->getUser();
-        $tab = $user->hasFlash('selected_form_tab') ? '&selected_form_tab='.$user->getFlash('selected_form_tab') : '';
-        return '<li class="sf_admin_action_previous">'.link_to('<span>'.__($params['label'], null, 'sf_admin').'</span>', '@<?php echo $this->getUrlForAction('object') ?>?action=previous&id='.$object->getPrimaryKey().$tab).'</li>';
-    }
-    return '';
-  }
+        if (array_key_exists('btn', $params))
+        {
+            return 'btn '.$params['btn'];
+        }
 
-  public function linkToNext($object, $params)
-  {
-    if(!$object->isNew())
-    {
-        $user = sfContext::getInstance()->getUser();
-        $tab = $user->hasFlash('selected_form_tab') ? '&selected_form_tab='.$user->getFlash('selected_form_tab') : '';
-        return '<li class="sf_admin_action_next">'.link_to('<span>'.__($params['label'], null, 'sf_admin').'</span>', '@<?php echo $this->getUrlForAction('object') ?>?action=next&id='.$object->getPrimaryKey().$tab).'</li>';
-    }
-    return '';
-  }
-
-  public function linkToSave($object, $params)
-  {
-    return '<li class="sf_admin_action_save"><a href="#" onclick="jQuery(\'#sf_admin_form_<?php echo $this->getModuleName() ?> form:first\').submit();return false"><span>'. __($params['label'], array(), 'sf_admin').'</span></a></li>';
-  }
-
-  public function linkToNew($params)
-  {
-    return '<li class="sf_admin_action_new">'.link_to('<span>'.__($params['label'], array(), 'sf_admin').'</span>', '@'.$this->getUrlForAction('new')).'</li>';
-  }
-
-  public function linkToEdit($object, $params)
-  {
-    return '<li class="sf_admin_action_edit">'.link_to('<span>'.__($params['label'], array(), 'sf_admin').'</span>', $this->getUrlForAction('edit'), $object).'</li>';
-  }
-
-  public function linkToDelete($object, $params)
-  {
-    if ($object->isNew())
-    {
-      return '';
+        return 'btn';
     }
 
-    return '<li class="sf_admin_action_delete">'.link_to('<span>'.__($params['label'], array(), 'sf_admin').'</span>', $this->getUrlForAction('delete'), $object, array('method' => 'delete', 'confirm' => !empty($params['confirm']) ? __($params['confirm'], array(), 'sf_admin') : $params['confirm'])).'</li>';
-  }
-
-  public function linkToList($params)
-  {
-    return '<li class="sf_admin_action_list">'.link_to('<span>'.__($params['label'], array(), 'sf_admin').'</span>', '@'.$this->getUrlForAction('list')).'</li>';
-  }
-
-  public function linkToSaveAndAdd($object, $params)
-  {
-    if (!$object->isNew())
+    public function getUrlForAction($action)
     {
-      return '';
+        return 'list' == $action ? '<?php echo $this->params['route_prefix'] ?>' : '<?php echo $this->params['route_prefix'] ?>_'.$action;
     }
 
-    return '<li class="sf_admin_action_save_and_add"><input type="submit" value="'.__($params['label'], array(), 'sf_admin').'" name="_save_and_add" /></li>';
-  }
+    public function linkToShow($object, $params)
+    {
+        return link_to('<i class="icon-camera"></i> '.__($params['label'], array(), 'sf_admin'), $this->getUrlForAction('show'), $object, array('class' => $this->buttonStyle($params)));
+    }
+
+    public function linkToPrevious($object, $params)
+    {
+        if(!$object->isNew())
+        {
+            $user = sfContext::getInstance()->getUser();
+            $tab = $user->hasFlash('selected_form_tab') ? '&selected_form_tab='.$user->getFlash('selected_form_tab') : '';
+            return link_to(' <i class="icon-arrow-left"></i> ', '@<?php echo $this->getUrlForAction('object') ?>?action=previous&id='.$object->getPrimaryKey().$tab, array('class' => $this->buttonStyle($params)));
+        }
+
+        return '';
+    }
+
+    public function linkToNext($object, $params)
+    {
+        if(!$object->isNew())
+        {
+            $user = sfContext::getInstance()->getUser();
+            $tab = $user->hasFlash('selected_form_tab') ? '&selected_form_tab='.$user->getFlash('selected_form_tab') : '';
+            return link_to(' <i class="icon-arrow-right"></i> ', '@<?php echo $this->getUrlForAction('object') ?>?action=next&id='.$object->getPrimaryKey().$tab, array('class' => $this->buttonStyle($params)));
+        }
+        return '';
+    }
+
+    public function linkToSave($object, $params)
+    {
+        return '<a class="'.$this->buttonStyle($params).'" href="#" onclick="jQuery(\'#sf_admin_form_<?php echo $this->getModuleName() ?> form:first\').submit();return false"><i class="icon-refresh"></i> '. __($params['label'], array(), 'sf_admin').'</a>';
+    }
+
+    public function linkToNew($params)
+    {
+        return link_to('<i class="icon-plus"></i> '.__($params['label'], array(), 'sf_admin'), '@'.$this->getUrlForAction('new'), array('class' => $this->buttonStyle($params)));
+    }
+
+    public function linkToEdit($object, $params)
+    {
+        return link_to('<i class="icon-pencil"></i> '.__($params['label'], array(), 'sf_admin'), $this->getUrlForAction('edit'), $object, array('class' => $this->buttonStyle($params)));
+    }
+
+    public function linkToDelete($object, $params)
+    {
+        if ($object->isNew())
+        {
+            return '';
+        }
+
+        return link_to('<i class="icon-remove icon-white"></i> '.__($params['label'], array(), 'sf_admin'), $this->getUrlForAction('delete'), $object, array('class' => $this->buttonStyle($params).' btn-danger', 'method' => 'delete', 'confirm' => !empty($params['confirm']) ? __($params['confirm'], array(), 'sf_admin') : $params['confirm']));
+    }
+
+    public function linkToList($params)
+    {
+        return link_to('<i class="icon-th-list"></i> '.__($params['label'], array(), 'sf_admin'), '@'.$this->getUrlForAction('list'), array('class' => $this->buttonStyle($params)));
+    }
+
+    public function linkToSaveAndAdd($object, $params)
+    {
+        return null;
+        if (!$object->isNew())
+        {
+            return '';
+        }
+
+        return '<input class="'.$this->buttonStyle($params).'" type="submit" value="'.__($params['label'], array(), 'sf_admin').'" name="_save_and_add" />';
+    }
 
     public function toggleBatchId($id)
     {

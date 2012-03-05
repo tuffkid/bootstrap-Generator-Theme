@@ -1,5 +1,5 @@
 [?php if ($value): ?]
-  [?php echo image_tag('icons/tick.png', array('alt' => __('Checked', array(), 'sf_admin'), 'title' => __('Checked', array(), 'sf_admin'))) ?]
+    <i class="icon-ok-sign"></i>
 [?php else: ?]
-  &nbsp;
+    <i class="icon-remove-sign"></i>
 [?php endif; ?]

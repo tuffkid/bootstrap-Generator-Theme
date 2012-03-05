@@ -11,7 +11,7 @@
         {
             $this->setMaxPerPage($request->getParameter('max_per_page'));
         }
-        
+
         // sorting
         if ($request->getParameter('sort'))
         {
@@ -32,5 +32,3 @@
         sfContext::getInstance()->getConfiguration()->loadHelpers('I18N');
         $this->getResponse()->setTitle( <?php echo $this->getI18NString('list.title') ?>);
     }
-
-
