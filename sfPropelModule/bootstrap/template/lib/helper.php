@@ -54,7 +54,7 @@ abstract class Base<?php echo ucfirst($this->getModuleName()) ?>GeneratorHelper 
 
     public function linkToSave($object, $params)
     {
-        return '<a class="'.$this->buttonStyle($params).'" href="#" onclick="jQuery(\'#sf_admin_form_<?php echo $this->getModuleName() ?> form:first\').submit();return false"><i class="icon-refresh"></i> '. __($params['label'], array(), 'sf_admin').'</a>';
+        return '<a class="'.$this->buttonStyle($params).'" href="#" onclick="jQuery(\'form:first\').submit();return false"><i class="icon-refresh"></i> '. __($params['label'], array(), 'sf_admin').'</a>';
     }
 
     public function linkToNew($params)
