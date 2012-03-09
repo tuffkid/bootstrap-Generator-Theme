@@ -1,5 +1,5 @@
 [?php if ($value): ?]
-    <i class="icon-ok-sign"></i>
+  [?php echo image_tag(sfConfig::get('sf_admin_module_web_dir').'/images/tick.png', array('alt' => __('Checked', array(), 'sf_admin'), 'title' => __('Checked', array(), 'sf_admin'))) ?]
 [?php else: ?]
-    <i class="icon-remove-sign"></i>
+  &nbsp;
 [?php endif; ?]

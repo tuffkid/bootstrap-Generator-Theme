@@ -9,7 +9,7 @@
  */
 abstract class Base<?php echo ucfirst($this->getModuleName()) ?>GeneratorHelper extends sfModelGeneratorHelper
 {
-    private function buttonStyle($params)
+    private function applyButtonStyle($params)
     {
         if (array_key_exists('btn', $params))
         {
@@ -19,52 +19,14 @@ abstract class Base<?php echo ucfirst($this->getModuleName()) ?>GeneratorHelper 
         return 'btn';
     }
 
-    public function getUrlForAction($action)
-    {
-        return 'list' == $action ? '<?php echo $this->params['route_prefix'] ?>' : '<?php echo $this->params['route_prefix'] ?>_'.$action;
-    }
-
-    public function linkToShow($object, $params)
-    {
-        return link_to('<i class="icon-camera"></i> '.__($params['label'], array(), 'sf_admin'), $this->getUrlForAction('show'), $object, array('class' => $this->buttonStyle($params)));
-    }
-
-    public function linkToPrevious($object, $params)
-    {
-        if(!$object->isNew())
-        {
-            $user = sfContext::getInstance()->getUser();
-            $tab = $user->hasFlash('selected_form_tab') ? '&selected_form_tab='.$user->getFlash('selected_form_tab') : '';
-            return link_to(' <i class="icon-arrow-left"></i> ', '@<?php echo $this->getUrlForAction('object') ?>?action=previous&id='.$object->getPrimaryKey().$tab, array('class' => $this->buttonStyle($params)));
-        }
-
-        return '';
-    }
-
-    public function linkToNext($object, $params)
-    {
-        if(!$object->isNew())
-        {
-            $user = sfContext::getInstance()->getUser();
-            $tab = $user->hasFlash('selected_form_tab') ? '&selected_form_tab='.$user->getFlash('selected_form_tab') : '';
-            return link_to(' <i class="icon-arrow-right"></i> ', '@<?php echo $this->getUrlForAction('object') ?>?action=next&id='.$object->getPrimaryKey().$tab, array('class' => $this->buttonStyle($params)));
-        }
-        return '';
-    }
-
-    public function linkToSave($object, $params)
-    {
-        return '<a class="'.$this->buttonStyle($params).'" href="#" onclick="jQuery(\'form:first\').submit();return false"><i class="icon-refresh"></i> '. __($params['label'], array(), 'sf_admin').'</a>';
-    }
-
     public function linkToNew($params)
     {
-        return link_to('<i class="icon-plus"></i> '.__($params['label'], array(), 'sf_admin'), '@'.$this->getUrlForAction('new'), array('class' => $this->buttonStyle($params)));
+        return link_to('<i class="icon-plus"></i> '.__($params['label'], array(), 'sf_admin'), '@'.$this->getUrlForAction('new'), array('class' => $this->applyButtonStyle($params)));
     }
 
     public function linkToEdit($object, $params)
     {
-        return link_to('<i class="icon-pencil"></i> '.__($params['label'], array(), 'sf_admin'), $this->getUrlForAction('edit'), $object, array('class' => $this->buttonStyle($params)));
+        return link_to('<i class="icon-pencil"></i> '.__($params['label'], array(), 'sf_admin'), $this->getUrlForAction('edit'), $object, array('class' => $this->applyButtonStyle($params)));
     }
 
     public function linkToDelete($object, $params)
@@ -74,23 +36,40 @@ abstract class Base<?php echo ucfirst($this->getModuleName()) ?>GeneratorHelper 
             return '';
         }
 
-        return link_to('<i class="icon-remove icon-white"></i> '.__($params['label'], array(), 'sf_admin'), $this->getUrlForAction('delete'), $object, array('class' => $this->buttonStyle($params).' btn-danger', 'method' => 'delete', 'confirm' => !empty($params['confirm']) ? __($params['confirm'], array(), 'sf_admin') : $params['confirm']));
+        return link_to(
+            '<i class="icon-ban-circle icon-white"></i> '.__($params['label'], array(), 'sf_admin'),
+            $this->getUrlForAction('delete'),
+            $object,
+            array(
+                'method' => 'delete',
+                'confirm' => !empty($params['confirm']) ? __($params['confirm'], array(), 'sf_admin') : $params['confirm'],
+                'class' => $this->applyButtonStyle($params).' btn-danger'
+        ));
     }
 
     public function linkToList($params)
     {
-        return link_to('<i class="icon-th-list"></i> '.__($params['label'], array(), 'sf_admin'), '@'.$this->getUrlForAction('list'), array('class' => $this->buttonStyle($params)));
+        return link_to('<i class="icon-list"></i> '.__($params['label'], array(), 'sf_admin'), '@'.$this->getUrlForAction('list'), array('class' => $this->applyButtonStyle($params)));
+    }
+
+    public function linkToSave($object, $params)
+    {
+        return '<a class="'.$this->applyButtonStyle($params).'" href="#" onclick="jQuery(\'#admin_form\').submit(); return false;"><i class="icon-ok"></i> '.__($params['label'], array(), 'sf_admin').'</a>';
     }
 
     public function linkToSaveAndAdd($object, $params)
     {
-        return null;
-        if (!$object->isNew())
-        {
-            return '';
-        }
+        return;
+    }
 
-        return '<input class="'.$this->buttonStyle($params).'" type="submit" value="'.__($params['label'], array(), 'sf_admin').'" name="_save_and_add" />';
+    public function linkToSaveAndEdit($object, $params)
+    {
+        return '<input class="'.$this->applyButtonStyle($params).'" type="submit" value="'.__($params['label'], array(), 'sf_admin').'" name="_save_and_edit" />';
+    }
+
+    public function getUrlForAction($action)
+    {
+        return 'list' == $action ? '<?php echo $this->params['route_prefix'] ?>' : '<?php echo $this->params['route_prefix'] ?>_'.$action;
     }
 
     public function toggleBatchId($id)

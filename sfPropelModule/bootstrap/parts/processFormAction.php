@@ -1,6 +1,7 @@
     protected function processForm(sfWebRequest $request, sfForm $form)
     {
         $form->bind($request->getParameter($form->getName()), $request->getFiles($form->getName()));
+
         if ($form->isValid())
         {
             $notice = $form->getObject()->isNew() ? 'The item was created successfully.' : 'The item was updated successfully.';
@@ -15,7 +16,6 @@
             else
             {
                 $this->getUser()->setFlash('notice', $notice);
-                $this->getUser()->setFlash('selected_form_tab', $request->getParameter('selected_form_tab', 0));
                 $this->redirect(array('sf_route' => '<?php echo $this->getUrlForAction('edit') ?>', 'sf_subject' => $<?php echo $this->getSingularName() ?>));
             }
         }

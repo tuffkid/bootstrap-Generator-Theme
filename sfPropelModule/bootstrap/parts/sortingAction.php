@@ -73,7 +73,6 @@
         {
             $sort[1] = 'asc';
         }
-
         $this->getUser()->setAttribute('<?php echo $this->getModuleName() ?>.sort', $sort, 'admin_module');
     }
 
@@ -82,4 +81,4 @@
     {
         return <?php echo $this->asPhp($customSorts) ?>;
     }
-<?php endif; ?>
+<?php endif ?>

@@ -2,7 +2,7 @@
     {
         $query = $this->buildQuery();
         $paginateMethod = $this->configuration->getPaginateMethod();
-        $pager = $query->$paginateMethod($this->getPage(), $this->getMaxPerPage());
+        $pager = $query->$paginateMethod($this->getPage(), $this->configuration->getPagerMaxPerPage());
 
         return $pager;
     }
@@ -23,8 +23,9 @@
         if (null === $this->filters)
         {
             $this->filters = $this->configuration->getFilterForm($this->getFilters());
-            <?php echo isset($this->params['disable_form_customization']) && $this->params['disable_form_customization'] ? '' : $this->getFormCustomization('filter', 'filters') ?>
+            <?php echo $this->getFormCustomization('filter', 'filters') ?>
         }
+
         $query = $this->filters->buildCriteria($this->getFilters());
     <?php else: ?>
         $query = PropelQuery::from('<?php echo $this->getModelClass() ?>');
@@ -35,9 +36,16 @@
             $query->joinWith($with);
         }
 
-        foreach ($this->configuration->getQueryMethods() as $method)
+        foreach ($this->configuration->getQueryMethods() as $methodName => $methodParams)
         {
-            $query->$method();
+            if(is_array($methodParams))
+            {
+                call_user_func_array(array($query, $methodName), $methodParams);
+            }
+            else
+            {
+                $query->$methodParams();
+            }
         }
 
         $this->processSort($query);
@@ -45,70 +53,5 @@
         $event = $this->dispatcher->filter(new sfEvent($this, 'admin.build_criteria'), $query);
         $query = $event->getReturnValue();
 
-    <?php if ($this->configuration->hasFilterForm()): ?>
-        $f = $this->getFilters();
-        $query->_if(isset($f['with_chosen_datasets']) && $f['with_chosen_datasets'] == true)
-            ->filterBy($this->getPrimaryKeyPhpName($query), $this->helper->getBatchIds(), Criteria::IN)
-        ->_endif();
-    <?php endif; ?>
-
         return $query;
-    }
-
-    protected function getMaxPerPage()
-    {
-        return $this->getUser()->getAttribute('<?php echo $this->getModuleName() ?>.max_per_page', $this->configuration->getPagerMaxPerPage(), 'admin_module');
-    }
-
-    protected function setMaxPerPage($max_per_page)
-    {
-        return $this->getUser()->setAttribute('<?php echo $this->getModuleName() ?>.max_per_page', $max_per_page, 'admin_module');
-    }
-
-    public function executeNext(sfWebRequest $request)
-    {
-        $this->forward404Unless($obj = $this->getRoute()->getObject());
-
-        $q = $this->buildQuery();
-        $rs = $q->select($this->getPrimaryKeyPhpName($q))->find();
-        $pos = $rs->search((string) $obj->getPrimaryKey());
-        $this->forward404Unless($pos !== false);
-
-        try
-        {
-            if($request->hasParameter('selected_form_tab'))
-            {
-                $this->getUser()->setFlash('selected_form_tab', $request->getParameter('selected_form_tab', 0));
-            }
-            $this->redirect('@<?php echo $this->getUrlForAction('edit') ?>?id='.$rs->get($pos+1));
-        }
-        catch(PropelException $e)
-        {
-            $this->getUser()->setFlash('error', 'You are already at the last object');
-            $this->redirect('@<?php echo $this->getUrlForAction('edit') ?>?id='.$obj->getId());
-        }
-    }
-
-    public function executePrevious(sfWebRequest $request)
-    {
-        $this->forward404Unless($obj = $this->getRoute()->getObject());
-
-        $q = $this->buildQuery();
-        $rs = $q->select($this->getPrimaryKeyPhpName($q))->find();
-        $pos = $rs->search((string) $obj->getPrimaryKey());
-        $this->forward404Unless($pos !== false);
-
-        try
-        {
-            if($request->hasParameter('selected_form_tab'))
-            {
-                $this->getUser()->setFlash('selected_form_tab', $request->getParameter('selected_form_tab', 0));
-            }
-            $this->redirect('@<?php echo $this->getUrlForAction('edit') ?>?id='.$rs->get($pos-1));
-        }
-        catch(PropelException $e)
-        {
-            $this->getUser()->setFlash('error', 'You are already at the first object');
-            $this->redirect('@<?php echo $this->getUrlForAction('edit') ?>?id='.$obj->getId());
-        }
     }

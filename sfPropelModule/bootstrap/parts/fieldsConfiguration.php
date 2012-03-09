@@ -36,17 +36,7 @@
 
     public function getFormDisplay()
     {
-    <?php if(isset($this->config['form']['display'])) : ?>
-        return <?php echo $this->asPhp($this->config['form']['display']) ?>;
-    <?php elseif(isset($this->config['form']['tabs'])): ?>
-        <?php $tab_display = array() ?>
-        <?php foreach($this->config['form']['tabs'] as $tab) : ?>
-            <?php if(isset($tab['display'])) $tab_display = array_merge($tab_display, $tab['display']); ?>
-        <?php endforeach; ?>
-        return <?php echo $this->asPhp($tab_display) ?>;
-    <?php else: ?>
-        return array();
-    <?php endif; ?>
+        return <?php echo $this->asPhp(isset($this->config['form']['display']) ? $this->config['form']['display'] : array()) ?>;
     <?php unset($this->config['form']['display']) ?>
     }
 
@@ -93,57 +83,3 @@
         );
     }
     <?php endforeach; ?>
-
-    public function hasHiddenFilterFields()
-    {
-        foreach($this->getFieldsDefault() as $name => $params)
-        {
-            if(isset($params['filter']) && $params['filter'] == 'hidden')
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function getFormFieldsForTab($tab_name, sfForm $form, $new)
-    {
-        foreach($this->getFormTabs($new) as $name => $tab)
-        {
-            if($name == $tab_name && isset($tab['display']))
-            {
-                $return = array();
-                foreach($this->getFormFields($form, $new) as $fieldset => $field)
-                {
-                    foreach($tab['display'] as $name)
-                    {
-                        list($display, $flag) = sfModelGeneratorConfigurationField::splitFieldWithFlag($name);
-                        if($fieldset != 'NONE')
-                        {
-                            if($fieldset == $display)
-                            {
-                                $return[$fieldset] = $field;
-                                continue;
-                            }
-                        }
-                        else
-                        {
-                            foreach($field as $single_name => $single_field)
-                            {
-                                if($single_name == $display)
-                                {
-                                    $return['NONE'][$single_name] = $single_field;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                return $return;
-            }
-        }
-
-        throw new sfException('Tab '.$tab_name.' not found');
-    }

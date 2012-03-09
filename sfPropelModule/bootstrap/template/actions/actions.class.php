@@ -12,18 +12,6 @@ require_once(dirname(__FILE__).'/../lib/Base<?php echo ucfirst($this->moduleName
  */
 abstract class <?php echo $this->getGeneratedModuleName() ?>Actions extends <?php echo $this->getActionsBaseClass()."\n" ?>
 {
-    public function getPrimaryKeyPhpName($q)
-    {
-        $pks = $q->getTableMap()->getPrimaryKeys();
-        $return = array();
-        foreach($pks as $pk)
-        {
-            $return[] = $pk->getPhpName();
-        }
-
-        return count($return) === 1 ? $return[0] : $return;
-    }
-
     public function preExecute()
     {
         $this->configuration = new <?php echo $this->getModuleName() ?>GeneratorConfiguration();
@@ -47,8 +35,6 @@ abstract class <?php echo $this->getGeneratedModuleName() ?>Actions extends <?ph
 
 <?php include dirname(__FILE__).'/../../parts/createAction.php' ?>
 
-<?php include dirname(__FILE__).'/../../parts/showAction.php' ?>
-
 <?php include dirname(__FILE__).'/../../parts/editAction.php' ?>
 
 <?php include dirname(__FILE__).'/../../parts/updateAction.php' ?>
@@ -68,4 +54,9 @@ abstract class <?php echo $this->getGeneratedModuleName() ?>Actions extends <?ph
 <?php include dirname(__FILE__).'/../../parts/paginationAction.php' ?>
 
 <?php include dirname(__FILE__).'/../../parts/sortingAction.php' ?>
+<?php if ($this->hasBehavior('sortable')): ?>
+<?php include dirname(__FILE__).'/../../parts/moveUpAction.php' ?>
+
+<?php include dirname(__FILE__).'/../../parts/moveDownAction.php' ?>
+<?php endif ?>
 }

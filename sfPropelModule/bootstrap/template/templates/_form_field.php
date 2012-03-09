@@ -11,10 +11,12 @@
 
             [?php if ($form[$name]->hasError()): ?]
                 <span class="help-inline">[?php echo $form[$name]->renderError() ?]</span>
-            [?php elseif ($help): ?]
-                <span class="help-inline">[?php echo __($help, array(), 'sf_admin') ?]</span>
+            [?php endif; ?]
+
+            [?php if ($help): ?]
+                <p class="help-block">[?php echo __($help, array(), '<?php echo $this->getI18nCatalogue() ?>') ?]</p>
             [?php elseif ($help = $form[$name]->renderHelp()): ?]
-                <span class="help-inline">[?php echo $help ?]</span>
+                <p class="help-block">[?php echo $help ?]</p>
             [?php endif; ?]
         </div>
     </div>

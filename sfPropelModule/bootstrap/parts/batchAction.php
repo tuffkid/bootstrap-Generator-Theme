@@ -5,6 +5,7 @@
         {
             $this->helper->toggleBatchId($obj->getPrimaryKey());
         }
+
         return $this->renderPartial('<?php echo $this->getModuleName() ?>/chosen_datasets', array('helper' => $this->helper));
     }
 
@@ -23,6 +24,16 @@
         return $this->renderPartial('<?php echo $this->getModuleName() ?>/chosen_datasets', array('helper' => $this->helper));
     }
 
+    public function getPrimaryKeyPhpName($query)
+    {
+        $pks = $query->getTableMap()->getPrimaryKeys();
+        $return = array();
+        foreach($pks as $pk)
+        {
+            $return[] = $pk->getPhpName();
+        }
+        return count($return) === 1 ? $return[0]: $return;
+}
 
     public function executeBatch(sfWebRequest $request)
     {
@@ -56,7 +67,6 @@
         {
             // validate ids
             $ids = $validator->clean($ids);
-
             // execute batch
             $this->$method($request);
         }
@@ -75,11 +85,6 @@
         $count = 0;
         foreach (<?php echo constant($this->getModelClass().'::PEER') ?>::retrieveByPks($ids) as $object)
         {
-            if(!$this->getUser()->hasCredential($this->configuration->getCredentials($action)))
-            {
-                continue;
-            }
-
             $this->dispatcher->notify(new sfEvent($this, 'admin.delete_object', array('object' => $object)));
             $object->delete();
             $count++;

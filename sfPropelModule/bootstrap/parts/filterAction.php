@@ -5,18 +5,17 @@
         if ($request->hasParameter('_reset'))
         {
             $this->setFilters($this->configuration->getFilterDefaults());
-
             $this->redirect('@<?php echo $this->getUrlForAction('list') ?>');
         }
 
         $this->filters = $this->configuration->getFilterForm($this->getFilters());
-        <?php echo isset($this->params['disable_form_customization']) && $this->params['disable_form_customization'] ? '' : $this->getFormCustomization('filter', 'filters') ?>
+        <?php echo $this->getFormCustomization('filter', 'filters') ?>
 
         $this->filters->bind($request->getParameter($this->filters->getName()));
+
         if ($this->filters->isValid())
         {
             $this->setFilters($this->filters->getValues());
-
             $this->redirect('@<?php echo $this->getUrlForAction('list') ?>');
         }
 
@@ -24,11 +23,4 @@
         $this->sort = $this->getSort();
 
         $this->setTemplate('index');
-    }
-
-    public function executeRemoteToggleExtendedFilters(sfWebRequest $request)
-    {
-        $this->forward404Unless($request->isXmlHttpRequest());
-        $this->getUser()->setAttribute('<?php echo $this->getModuleName() ?>.extended_filters', !$this->getUser()->getAttribute('<?php echo $this->getModuleName() ?>.extended_filters', false, 'admin_module'), 'admin_module');
-        return sfView::NONE;
     }
