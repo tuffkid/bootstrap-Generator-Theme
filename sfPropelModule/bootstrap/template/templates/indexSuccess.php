@@ -35,7 +35,7 @@
 
         [?php include_partial('<?php echo $this->getModuleName() ?>/list', array('pager' => $pager, 'sort' => $sort, 'helper' => $helper)) ?]
             <ul class="unstyled">
-                [?php include_partial('<?php echo $this->getModuleName() ?>/list_batch_actions', array('helper' => $helper)) ?]
+                [?php include_partial('<?php echo $this->getModuleName() ?>/list_batch_actions', array('helper' => $helper, 'pager' => $pager)) ?]
                 [?php include_partial('<?php echo $this->getModuleName() ?>/list_actions', array('helper' => $helper)) ?]
             </ul>
 

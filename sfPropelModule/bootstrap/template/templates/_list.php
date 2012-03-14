@@ -8,13 +8,15 @@
             <thead>
                 <tr>
                     <?php if ($this->configuration->getValue('list.batch_actions')): ?>
-                        <th id="sf_admin_list_batch_actions"><input id="sf_admin_list_batch_checkbox" type="checkbox" onclick="checkAll();" /></th>
+                        <th style="width: 30px; text-align: center;" id="sf_admin_list_batch_actions">
+                            <input id="sf_admin_list_batch_checkbox" type="checkbox" onclick="checkAll();" />
+                        </th>
                     <?php endif; ?>
 
                     [?php include_partial('<?php echo $this->getModuleName() ?>/list_th_<?php echo $this->configuration->getValue('list.layout') ?>', array('sort' => $sort)) ?]
 
                     <?php if ($this->configuration->getValue('list.object_actions')): ?>
-                        <th style="text-align: right">
+                        <th style="text-align: right; width: 200px;">
                             [?php //echo __('Actions', array(), 'sf_admin') ?]
                         </th>
                     <?php endif; ?>
@@ -25,7 +27,7 @@
                 [?php foreach ($pager->getResults() as $<?php echo $this->getSingularName() ?>): ?]
                     <tr class="sf_admin_row">
                         <?php if ($this->configuration->getValue('list.batch_actions')): ?>
-                            <td>
+                            <td  style="text-align: center;">
                                 [?php include_partial('<?php echo $this->getModuleName() ?>/list_td_batch_actions', array('<?php echo $this->getSingularName() ?>' => $<?php echo $this->getSingularName() ?>, 'helper' => $helper)) ?]
                             </td>
                         <?php endif; ?>
@@ -33,7 +35,7 @@
                         [?php include_partial('<?php echo $this->getModuleName() ?>/list_td_<?php echo $this->configuration->getValue('list.layout') ?>', array('<?php echo $this->getSingularName() ?>' => $<?php echo $this->getSingularName() ?>)) ?]
 
                         <?php if ($this->configuration->getValue('list.object_actions')): ?>
-                            <td style="text-align: right">
+                            <td style="text-align: right;">
                                 [?php include_partial('<?php echo $this->getModuleName() ?>/list_td_actions', array('<?php echo $this->getSingularName() ?>' => $<?php echo $this->getSingularName() ?>, 'helper' => $helper)) ?]
                             </td>
                         <?php endif; ?>
