@@ -3,7 +3,7 @@
     [?php if (!$pager->getNbResults()): ?]
         <p>[?php echo __('No result', array(), 'sf_admin') ?]</p>
     [?php else: ?]
-        <table class="table table-striped table-bordered table-condensed">
+        <table class="table table-hover table-condensed">
 
             <thead>
                 <tr>
