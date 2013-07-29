@@ -1,6 +1,6 @@
-<ul class="unstyled">
+<div class="btn-group">
     <?php foreach ($this->configuration->getValue('list.object_actions') as $name => $params): ?>
-        <?php $params['btn'] = 'btn-mini'; ?>
+        <?php $params['btn'] = 'btn-small'; ?>
 
         <?php if ('_delete' == $name): ?>
             <?php echo $this->addCredentialCondition('[?php echo $helper->linkToDelete($'.$this->getSingularName().', '.$this->asPhp($params).') ?]', $params) ?>
@@ -12,4 +12,4 @@
             </li>
         <?php endif; ?>
     <?php endforeach; ?>
-</ul>
+</div>

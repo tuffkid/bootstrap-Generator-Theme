@@ -13,7 +13,7 @@ abstract class Base<?php echo ucfirst($this->getModuleName()) ?>GeneratorHelper 
     {
         if (array_key_exists('btn', $params))
         {
-            return 'btn '.$params['btn'];
+            return 'btn btn-default '.$params['btn'];
         }
 
         return 'btn';
